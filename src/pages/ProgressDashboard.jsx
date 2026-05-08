@@ -10,60 +10,94 @@ const ProgressDashboard = () => {
   }, []);
 
   if (loading) return <div>Loading progress...</div>;
-  if (!progressDashboard) return <div>No data available</div>;
+  if (!progressDashboard) return <div>No progress data available</div>;
 
-  const { readinessScore, quizPerformance, crtPerformance, interviewPerformance, totalQuizzes, totalCRTSessions, totalInterviews, currentStreak, activityLog } = progressDashboard;
+  const stats = [
+    { label: 'Readiness Score', value: Math.round(progressDashboard.readinessScore || 0) + '%', color: '#667eea' },
+    { label: 'Quizzes Completed', value: progressDashboard.totalQuizzes || 0, color: '#764ba2' },
+    { label: 'CRT Sessions', value: progressDashboard.totalCRTSessions || 0, color: '#f093fb' },
+    { label: 'Interviews Done', value: progressDashboard.totalInterviews || 0, color: '#4facfe' },
+    { label: 'Study Streak', value: (progressDashboard.currentStreak || 0) + ' days', color: '#43e97b' },
+    { label: 'Total Study Hours', value: Math.round(progressDashboard.totalStudyHours || 0) + 'h', color: '#fa709a' },
+  ];
 
   return (
     <>
       <Navbar />
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
-        <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#333', marginBottom: '32px' }}>📊 Progress Dashboard</h1>
+        <h1 style={{ fontSize: '32px', fontWeight: 'bold', color: '#333', marginBottom: '32px' }}>📊 Your Progress</h1>
 
-        {/* Main Readiness Score */}
-        <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '40px', borderRadius: '12px', color: '#fff', marginBottom: '40px', textAlign: 'center' }}>
-          <h2>Overall Readiness Score</h2>
-          <div style={{ width: '200px', height: '200px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '20px auto' }}>
-            <span style={{ fontSize: '48px', fontWeight: 'bold' }}>{Math.round(readinessScore || 0)}%</span>
-          </div>
-          <p style={{ fontSize: '18px', margin: 0 }}>
-            {readinessScore >= 75 ? '🌟 Excellent preparation!' : readinessScore >= 50 ? '👍 Good progress!' : '💪 Keep working harder!'}
-          </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              style={{
+                backgroundColor: '#fff',
+                padding: '24px',
+                borderRadius: '8px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                borderLeft: `4px solid ${stat.color}`,
+              }}
+            >
+              <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '12px' }}>{stat.label}</p>
+              <p style={{ fontSize: '32px', fontWeight: 'bold', color: stat.color, margin: 0 }}>{stat.value}</p>
+            </div>
+          ))}
         </div>
 
-        {/* Performance Metrics */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '40px' }}>
-          <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0, marginBottom: '8px' }}>Quiz Performance</p>
-            <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#0066cc' }}>{Math.round(quizPerformance || 0)}%</div>
-            <p style={{ color: '#999', fontSize: '12px', margin: '8px 0 0 0' }}>{totalQuizzes} quizzes completed</p>
+        {progressDashboard.quizPerformance && (
+          <div style={{ backgroundColor: '#fff', padding: '32px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginBottom: '40px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '24px' }}>Quiz Performance</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '8px' }}>Average Score</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#667eea', margin: 0 }}>{Math.round(progressDashboard.quizPerformance.averageScore || 0)}%</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '8px' }}>Quizzes Taken</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#667eea', margin: 0 }}>{progressDashboard.quizPerformance.totalQuizzes || 0}</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '8px' }}>Best Score</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#667eea', margin: 0 }}>{Math.round(progressDashboard.quizPerformance.bestScore || 0)}%</p>
+              </div>
+            </div>
           </div>
-          <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0, marginBottom: '8px' }}>CRT Performance</p>
-            <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#4facfe' }}>{Math.round(crtPerformance || 0)}%</div>
-            <p style={{ color: '#999', fontSize: '12px', margin: '8px 0 0 0' }}>{totalCRTSessions} sessions completed</p>
-          </div>
-          <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0, marginBottom: '8px' }}>Interview Performance</p>
-            <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#43e97b' }}>{Math.round(interviewPerformance || 0)}%</div>
-            <p style={{ color: '#999', fontSize: '12px', margin: '8px 0 0 0' }}>{totalInterviews} interviews completed</p>
-          </div>
-          <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <p style={{ color: '#666', fontSize: '14px', margin: 0, marginBottom: '8px' }}>Study Streak</p>
-            <div style={{ fontSize: '32px', fontWeight: 'bold', color: '#fa709a' }}>{currentStreak || 0} days</div>
-            <p style={{ color: '#999', fontSize: '12px', margin: '8px 0 0 0' }}>🔥 Keep it going!</p>
-          </div>
-        </div>
+        )}
 
-        {/* Activity Log */}
-        {activityLog && activityLog.length > 0 && (
-          <div style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#333', margin: 0, marginBottom: '20px' }}>Recent Activity</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {activityLog.slice(0, 10).map((activity, index) => (
-                <div key={index} style={{ padding: '12px', backgroundColor: '#f8f9fa', borderRadius: '4px', borderLeft: '4px solid #667eea' }}>
-                  <p style={{ fontSize: '14px', fontWeight: '600', color: '#333', margin: 0 }}>{activity.description}</p>
-                  <p style={{ fontSize: '12px', color: '#999', margin: '4px 0 0 0' }}>{new Date(activity.timestamp).toLocaleDateString()} • {activity.type}</p>
+        {progressDashboard.crtPerformance && (
+          <div style={{ backgroundColor: '#fff', padding: '32px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginBottom: '40px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '24px' }}>CRT Performance</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '8px' }}>Average Score</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#764ba2', margin: 0 }}>{Math.round(progressDashboard.crtPerformance.averageScore || 0)}%</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '8px' }}>Sessions Completed</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#764ba2', margin: 0 }}>{progressDashboard.crtPerformance.totalSessions || 0}</p>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: '13px', color: '#666', margin: 0, marginBottom: '8px' }}>Best Score</p>
+                <p style={{ fontSize: '28px', fontWeight: 'bold', color: '#764ba2', margin: 0 }}>{Math.round(progressDashboard.crtPerformance.bestScore || 0)}%</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {progressDashboard.roadmapProgress && (
+          <div style={{ backgroundColor: '#fff', padding: '32px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#333', marginBottom: '24px' }}>Roadmap Progress</h2>
+            <div style={{ display: 'grid', gap: '16px' }}>
+              {progressDashboard.roadmapProgress.map((roadmap, index) => (
+                <div key={index}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#333' }}>{roadmap.title}</span>
+                    <span style={{ fontSize: '13px', color: '#666' }}>{Math.round(roadmap.completionPercentage)}%</span>
+                  </div>
+                  <div style={{ width: '100%', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', backgroundColor: '#4caf50', transition: 'width 0.3s', width: `${roadmap.completionPercentage}%` }}></div>
+                  </div>
                 </div>
               ))}
             </div>

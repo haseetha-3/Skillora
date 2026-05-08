@@ -20,8 +20,8 @@ const CRTTake = () => {
     }
   }, []);
 
-  if (loading) return <div>Loading session...</div>;
-  if (!session) return <div>Session not found</div>;
+  if (loading) return <div>Loading CRT session...</div>;
+  if (!session) return <div>CRT session not found</div>;
 
   const questions = session.questions || [];
   const currentQ = questions[currentQuestion];
@@ -56,17 +56,18 @@ const CRTTake = () => {
         <Navbar />
         <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px' }}>
           <div style={{ backgroundColor: '#fff', padding: '40px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', textAlign: 'center' }}>
-            <h2 style={{ fontSize: '28px', marginBottom: '24px' }}>CRT Results</h2>
-            <div style={{ width: '200px', height: '200px', borderRadius: '50%', backgroundColor: '#f0f7ff', border: '4px solid #4facfe', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
-              <span style={{ fontSize: '64px', fontWeight: 'bold', color: '#4facfe' }}>{Math.round(result.score)}%</span>
+            <h2 style={{ fontSize: '28px', marginBottom: '24px' }}>CRT Test Results</h2>
+            <div style={{ width: '200px', height: '200px', borderRadius: '50%', backgroundColor: '#f0f7ff', border: '4px solid #0066cc', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              <span style={{ fontSize: '64px', fontWeight: 'bold', color: '#0066cc' }}>{Math.round(result.score)}%</span>
             </div>
             <p style={{ fontSize: '18px', marginBottom: '24px' }}>
               {result.score >= 70 ? '🌟 Excellent!' : result.score >= 50 ? '👍 Good effort!' : '💪 Keep practicing!'}
             </p>
             <div style={{ fontSize: '16px', marginBottom: '24px' }}>
               <p>Correct: {result.correctCount} / {questions.length}</p>
+              <p>Score: {Math.round(result.score)} points</p>
             </div>
-            <button onClick={() => navigate('/crt')} style={{ padding: '12px 32px', fontSize: '16px', fontWeight: '600', backgroundColor: '#4facfe', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+            <button onClick={() => navigate('/crt')} style={{ padding: '12px 32px', fontSize: '16px', fontWeight: '600', backgroundColor: '#0066cc', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
               Back to CRT
             </button>
           </div>
@@ -80,11 +81,11 @@ const CRTTake = () => {
       <Navbar />
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px' }}>
         <div style={{ marginBottom: '40px' }}>
-          <h1>{session.title}</h1>
+          <h1>{session.category} - CRT Test</h1>
           <div style={{ marginTop: '16px' }}>
             <span>Question {currentQuestion + 1} of {questions.length}</span>
             <div style={{ width: '100%', height: '8px', backgroundColor: '#e0e0e0', borderRadius: '4px', marginTop: '8px', overflow: 'hidden' }}>
-              <div style={{ height: '100%', backgroundColor: '#4facfe', transition: 'width 0.3s ease', width: `${((currentQuestion + 1) / questions.length) * 100}%` }}></div>
+              <div style={{ height: '100%', backgroundColor: '#0066cc', transition: 'width 0.3s ease', width: `${((currentQuestion + 1) / questions.length) * 100}%` }}></div>
             </div>
           </div>
         </div>
@@ -102,7 +103,7 @@ const CRTTake = () => {
                     gap: '12px',
                     padding: '16px',
                     border: '2px solid',
-                    borderColor: answers[currentQuestion] === option.label ? '#4facfe' : '#ddd',
+                    borderColor: answers[currentQuestion] === option.label ? '#0066cc' : '#ddd',
                     borderRadius: '8px',
                     cursor: 'pointer',
                     transition: 'all 0.2s',
@@ -112,7 +113,7 @@ const CRTTake = () => {
                 >
                   <input
                     type="radio"
-                    name={`question-${currentQuestion}`}
+                    name={`crt-${currentQuestion}`}
                     value={option.label}
                     checked={answers[currentQuestion] === option.label}
                     onChange={() => handleAnswer(option.label)}
@@ -125,55 +126,24 @@ const CRTTake = () => {
               ))}
             </div>
 
-            {currentQ.explanation && (
-              <div style={{ backgroundColor: '#f9f9f9', padding: '16px', borderRadius: '4px', marginBottom: '32px', fontSize: '13px' }}>
-                <p style={{ fontWeight: '600', marginBottom: '8px' }}>💡 Explanation:</p>
-                <p>{currentQ.explanation}</p>
-              </div>
-            )}
-
             {currentQ.shortcut && (
-              <div style={{ backgroundColor: '#fffacd', padding: '16px', borderRadius: '4px', marginBottom: '32px', fontSize: '13px' }}>
-                <p style={{ fontWeight: '600', marginBottom: '8px' }}>⚡ Quick Shortcut:</p>
-                <p>{currentQ.shortcut}</p>
+              <div style={{ backgroundColor: '#f0f7ff', border: '1px solid #0066cc', padding: '16px', borderRadius: '8px', marginBottom: '32px' }}>
+                <p style={{ color: '#0066cc', fontWeight: '600', margin: '0 0 8px 0' }}>💡 Quick Shortcut:</p>
+                <p style={{ color: '#0066cc', margin: 0 }}>{currentQ.shortcut}</p>
               </div>
             )}
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px' }}>
-              <button onClick={handlePrev} disabled={currentQuestion === 0} style={{ padding: '12px 24px', fontSize: '14px', fontWeight: '600', backgroundColor: '#4facfe', color: '#fff', border: 'none', borderRadius: '4px', cursor: currentQuestion === 0 ? 'not-allowed' : 'pointer', opacity: currentQuestion === 0 ? 0.5 : 1 }}>
+              <button onClick={handlePrev} disabled={currentQuestion === 0} style={{ padding: '12px 24px', fontSize: '14px', fontWeight: '600', backgroundColor: '#0066cc', color: '#fff', border: 'none', borderRadius: '4px', cursor: currentQuestion === 0 ? 'not-allowed' : 'pointer', opacity: currentQuestion === 0 ? 0.5 : 1 }}>
                 ← Previous
               </button>
-
-              <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                {questions.map((_, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setCurrentQuestion(index)}
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#fff',
-                      fontWeight: 'bold',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      backgroundColor: index === currentQuestion ? '#4facfe' : answers[index] ? '#4caf50' : '#e0e0e0',
-                    }}
-                  >
-                    {index + 1}
-                  </div>
-                ))}
-              </div>
 
               {currentQuestion === questions.length - 1 ? (
                 <button onClick={handleSubmit} style={{ padding: '12px 24px', fontSize: '14px', fontWeight: '600', backgroundColor: '#4caf50', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                   Submit Test →
                 </button>
               ) : (
-                <button onClick={handleNext} style={{ padding: '12px 24px', fontSize: '14px', fontWeight: '600', backgroundColor: '#4facfe', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+                <button onClick={handleNext} style={{ padding: '12px 24px', fontSize: '14px', fontWeight: '600', backgroundColor: '#0066cc', color: '#fff', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
                   Next →
                 </button>
               )}
